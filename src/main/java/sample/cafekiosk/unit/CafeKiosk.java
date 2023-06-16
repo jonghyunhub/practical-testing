@@ -1,5 +1,6 @@
 package sample.cafekiosk.unit;
 
+import lombok.Getter;
 import sample.cafekiosk.unit.beverage.Beverage;
 import sample.cafekiosk.unit.order.Order;
 
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class CafeKiosk {
 
     private List<Beverage> beverages = new ArrayList<>();
