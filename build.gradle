@@ -4,6 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
+
 group = 'sample'
 version = '0.0.1-SNAPSHOT'
 
@@ -37,6 +38,10 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+
+tasks {
+    test{
+        useJUnitPlatform()
+    }
 }
+
