@@ -89,20 +89,6 @@ class CafeKioskTest {
 
         assertThat(cafeKiosk.getBeverages()).isEmpty();
     }
-
-//    @Test
-//    void createOrder() {
-//        CafeKiosk cafeKiosk = new CafeKiosk();
-//        Americano americano = new Americano();
-//
-//        cafeKiosk.add(americano);
-//
-//        Order order = cafeKiosk.createOrder();
-//        assertThat(order.getBeverages()).hasSize(1);
-//        assertThat(order.getBeverages().get(0).getName()).isEqualTo("아메리카노");
-//
-//    }
-
     
 
 
