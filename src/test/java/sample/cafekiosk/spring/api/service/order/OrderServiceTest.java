@@ -1,5 +1,6 @@
 package sample.cafekiosk.spring.api.service.order;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import sample.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import sample.cafekiosk.spring.api.service.order.response.OrderResponse;
+import sample.cafekiosk.spring.domain.order.OrderRepository;
+import sample.cafekiosk.spring.domain.orderproduct.OrderProductRepository;
 import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductRepository;
-import sample.cafekiosk.spring.domain.product.ProductType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,13 +30,26 @@ class OrderServiceTest {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderProductRepository orderProductRepository;
+
+    @AfterEach
+    void tearDown() {
+        productRepository.deleteAllInBatch();
+        orderRepository.deleteAllInBatch();
+        orderProductRepository.deleteAllInBatch();
+    }
+
     @DisplayName("주문번호 리스트를 받아 주문을 생성한다.")
     @Test
     void createOrder() {
         //given
-        Product product1 = createProduct(HANDMADE, "001", 1000);
-        Product product2 = createProduct(HANDMADE, "002", 3000);
-        Product product3 = createProduct(HANDMADE, "003", 5000);
+        Product product1 = createProduct("001", 1000);
+        Product product2 = createProduct("002", 3000);
+        Product product3 = createProduct("003", 5000);
         productRepository.saveAll(List.of(product1, product2, product3));
 
         OrderCreateRequest request = OrderCreateRequest.builder()
@@ -58,9 +73,40 @@ class OrderServiceTest {
                 );
     }
 
-    private Product createProduct(ProductType type, String productNumber, int price) {
+    @DisplayName("중복되는 상품번호 리스트로 주문을 생성할 수 있다.")
+    @Test
+    void createOrderWithDulpicateProductNumbers(){
+        //given
+        Product product1 = createProduct("001", 1000);
+        Product product2 = createProduct("002", 3000);
+        Product product3 = createProduct("003", 5000);
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+        OrderCreateRequest request = OrderCreateRequest.builder()
+                .productNumbers(List.of("001", "001"))
+                .build();
+
+        //when
+        LocalDateTime registeredDateTime = LocalDateTime.now();
+        OrderResponse orderResponse = orderService.createOrder(request, registeredDateTime);
+
+        //then
+        assertThat(orderResponse.getId()).isNotNull(); //id는 값이 무엇인지 중요한게 아니고 비어있지만 않으면 됨
+        assertThat(orderResponse)
+                .extracting("registeredDateTime", "totalPrice")
+                .contains(registeredDateTime, 2000);
+        assertThat(orderResponse.getProducts()).hasSize(2)
+                .extracting("productNumber", "price")
+                .containsExactlyInAnyOrder( //순서 정확하지 않고 포함되어있기만 하면 true
+                        tuple("001", 1000),
+                        tuple("001", 1000)
+                );
+
+    }
+
+    private Product createProduct(String productNumber, int price) {
         return Product.builder()
-                .type(type)
+                .type(HANDMADE)
                 .productNumber(productNumber)
                 .price(price)
                 .sellingStatus(SELLING)
