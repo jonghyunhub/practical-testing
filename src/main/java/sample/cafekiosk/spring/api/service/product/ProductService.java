@@ -12,9 +12,16 @@ import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * readOnly = true : 읽기전용
+ * CRUD 에서 CUD 동작 X / only Read
+ * JPA : CUD 스냅샷 저장, 변경감지 X (성능 향상)
+ *
+ * CQRS - Command(CUD) / Query(Read) 분리
+ */
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -24,6 +31,7 @@ public class ProductService {
     // DB에서 마지막 저장된 Product의 상품 번호를 읽어와서 + 1
     // ex) 009(기존 마지막 상품번호) -> 010 (새로 생성한 상품번호)
     // 동시성 이슈도 생길 수 있음
+    @Transactional
     public ProductResponse createProduct(ProductCreateRequest request) {
         String nextProductNumber = createNextProductNumber();
 
