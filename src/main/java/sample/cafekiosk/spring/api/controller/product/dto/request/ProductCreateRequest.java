@@ -7,13 +7,24 @@ import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.domain.product.ProductType;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 @Getter
 @NoArgsConstructor
 public class ProductCreateRequest {
 
+    @NotNull
     private ProductType type;
+
+    @NotNull
     private ProductSellingStatus sellingStatus;
+
+    @NotBlank
     private String name;
+
+    @Positive
     private int price;
 
     @Builder
