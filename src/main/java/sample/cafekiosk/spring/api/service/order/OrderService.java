@@ -38,6 +38,21 @@ public class OrderService {
      * 3. 재고가 있는 상품의 리스트를 Map으로 변환해서 각 상품의 갯수를 집계한다.
      * 4. 재고를 차감한다.
      */
+
+    private static List<String> extractStockProductNumbers(List<Product> products) {
+        // 재고 차감 체크가 필요한 상품들 filter (2)
+        return products.stream()
+                .filter(product -> ProductType.containsStockType(product.getType()))
+                .map(Product::getProductNumber)
+                .collect(Collectors.toList());
+    }
+
+    private static Map<String, Long> createCountingMapBy(List<String> stockProductNumbers) {
+        // 상품별 counting (3) Map<주문상품번호,주문상품번호 갯수>
+        return stockProductNumbers.stream()
+                .collect(Collectors.groupingBy(p -> p, Collectors.counting()));
+    }
+
     /**
      * 재고 감소 -> 동시성 고민
      * optimistic lock / pessimistic lock / ...
@@ -92,25 +107,10 @@ public class OrderService {
         }
     }
 
-    private static List<String> extractStockProductNumbers(List<Product> products) {
-        // 재고 차감 체크가 필요한 상품들 filter (2)
-        return products.stream()
-                .filter(product -> ProductType.containsStockType(product.getType()))
-                .map(Product::getProductNumber)
-                .collect(Collectors.toList());
-    }
-
     private Map<String, Stock> createStockMapBy(List<String> stockProductNumbers) {
         // 재고 엔티티 조회 (2-1)
         List<Stock> stocks = stockRepository.findAllByProductNumberIn(stockProductNumbers);
         return stocks.stream()
                 .collect(Collectors.toMap(Stock::getProductNumber, s -> s));
-    }
-
-
-    private static Map<String, Long> createCountingMapBy(List<String> stockProductNumbers) {
-        // 상품별 counting (3) Map<주문상품번호,주문상품번호 갯수>
-        return stockProductNumbers.stream()
-                .collect(Collectors.groupingBy(p -> p, Collectors.counting()));
     }
 }

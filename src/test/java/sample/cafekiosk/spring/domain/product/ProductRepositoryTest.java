@@ -23,7 +23,7 @@ class ProductRepositoryTest {
 
     @DisplayName("원하는 판매상태를 가진 상품들을 조회한다.")
     @Test
-    void findAllBySellingStatusIn(){
+    void findAllBySellingStatusIn() {
         //given
         Product product1 = createProduct("001", HANDMADE, SELLING, "아메리카노", 4000);
         Product product2 = createProduct("002", HANDMADE, HOLD, "카페라떼", 4500);
@@ -45,7 +45,7 @@ class ProductRepositoryTest {
 
     @DisplayName("상품번호 리스트로 상품들을 조회한다.")
     @Test
-    void findAllByProductNumberIn(){
+    void findAllByProductNumberIn() {
         //given
         Product product1 = createProduct("001", HANDMADE, SELLING, "아메리카노", 4000);
         Product product2 = createProduct("002", HANDMADE, HOLD, "카페라떼", 4500);
@@ -54,7 +54,7 @@ class ProductRepositoryTest {
         productRepository.saveAll(List.of(product1, product2, product3));
 
         //when
-        List<Product> products = productRepository.findAllByProductNumberIn(List.of("001","002"));
+        List<Product> products = productRepository.findAllByProductNumberIn(List.of("001", "002"));
 
         //then
         assertThat(products).hasSize(2)
@@ -67,7 +67,7 @@ class ProductRepositoryTest {
 
     @DisplayName("가장 마지막으로 저장한 상품의 상품번호를 읽어온다.")
     @Test
-    void findLatestProductNumber(){
+    void findLatestProductNumber() {
         //given
         String targetProductNumber = "003";
 
@@ -86,7 +86,7 @@ class ProductRepositoryTest {
 
     @DisplayName("가장 마지막으로 저장한 상품의 상품번호를 읽어올 때, 상품이 하나도 없는 경우에는 null을 반환한다.")
     @Test
-    void findLatestProductNumberWhenProductIsEmpty(){
+    void findLatestProductNumberWhenProductIsEmpty() {
         //when
         String latestProductNumber = productRepository.findLatestProductNumber();
 

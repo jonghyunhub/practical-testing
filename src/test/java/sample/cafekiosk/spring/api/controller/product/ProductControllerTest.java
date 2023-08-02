@@ -10,9 +10,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import sample.cafekiosk.spring.api.service.product.ProductService;
+import sample.cafekiosk.spring.api.service.product.response.ProductResponse;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.domain.product.ProductType;
 
+import java.util.List;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,9 +49,9 @@ class ProductControllerTest {
         // when // then
         // PostMapping의 경우 바디에 데이터를 넣어서 보내는데 이경우 JSON 형태로 보내므로 request 객체를 직렬화/역직렬화를 도와주는 ObjectMapper가 필요함.
         mockMvc.perform(
-                post("/api/v1/products/new")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
+                        post("/api/v1/products/new")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print()) // 요청에 대한 로그를 더 자세하게 확인 가능
                 .andExpect(status().isOk());
@@ -152,5 +157,26 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("상품 가격은 양수여야 합니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+
+    @DisplayName("판매 상품을 조회한다.")
+    @Test
+    void getSellingProducts() throws Exception {
+        // given
+        List<ProductResponse> result = List.of();
+
+        when(productService.getSellingProducts()).thenReturn(result);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/v1/products/selling")
+                )
+                .andDo(print()) // 요청에 대한 로그를 더 자세하게 확인 가능
+                .andExpect(status().isOk()) //Status 상태코드 검증
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data").isArray());
     }
 }

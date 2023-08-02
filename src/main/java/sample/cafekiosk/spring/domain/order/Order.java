@@ -38,7 +38,7 @@ public class Order extends BaseEntitiy {
         this.totalPrice = calculateTotalPrice(products);
         this.registeredDateTime = registeredDateTime;
         this.orderProducts = products.stream()
-                .map(product -> new OrderProduct(this,product))
+                .map(product -> new OrderProduct(this, product))
                 .collect(Collectors.toList());
     }
 

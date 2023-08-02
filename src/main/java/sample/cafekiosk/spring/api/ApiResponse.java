@@ -19,7 +19,7 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-    public static <T> ApiResponse<T> of(HttpStatus httpStatus,String message ,T data) {
+    public static <T> ApiResponse<T> of(HttpStatus httpStatus, String message, T data) {
         return new ApiResponse<>(httpStatus, message, data);
     }
 

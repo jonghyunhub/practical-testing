@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * readOnly = true : 읽기전용
  * CRUD 에서 CUD 동작 X / only Read
  * JPA : CUD 스냅샷 저장, 변경감지 X (성능 향상)
- *
+ * <p>
  * CQRS - Command(CUD) / Query(Read) 분리
  */
 @Transactional(readOnly = true)

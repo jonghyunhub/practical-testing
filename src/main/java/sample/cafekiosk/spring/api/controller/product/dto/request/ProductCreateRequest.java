@@ -21,6 +21,9 @@ public class ProductCreateRequest {
     @NotNull(message = "상품 판매상태는 필수입니다.")
     private ProductSellingStatus sellingStatus;
 
+    // 만약 도메인 정책으로 name -> 상품 이름은 20자 제한이 있다면 controller단에서 검증하는것이 맞을까?
+    // 이런 도메인 정책은 도메인단에서 검증해주는 것이 좋다.
+    // 검증에 관한 책임도 레이어 별로 나눠서 만들어보자.
     @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
 
