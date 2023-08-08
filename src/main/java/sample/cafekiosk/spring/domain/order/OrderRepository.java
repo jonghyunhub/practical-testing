@@ -14,6 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "where o.registeredDateTime >= :startDateTime " +
             "and o.registeredDateTime < :endDateTime " +
             "and o.orderStatus = :orderStatus")
-    List<Order> findOrdersBy(LocalDateTime startDataTime, LocalDateTime endDateTime, OrderStatus orderStatus);
+    List<Order> findOrdersBy(LocalDateTime startDateTime, LocalDateTime endDateTime, OrderStatus orderStatus);
 
 }

@@ -17,7 +17,7 @@ public class OrderStatisticsService {
     private final OrderRepository orderRepository;
     private final MailService mailService;
 
-    public void sendOrderStatisticsMail(LocalDate orderDate, String email) {
+    public boolean sendOrderStatisticsMail(LocalDate orderDate, String email) {
         // 해당 일자에 결제완료 된 주문들을 가져와서
         List<Order> orders = orderRepository.findOrdersBy(
                 orderDate.atStartOfDay(), // 17일 이라고 하면 17일 0시(00:00)을 의미함
@@ -41,6 +41,7 @@ public class OrderStatisticsService {
             throw new IllegalArgumentException("매출 통계 메일 전송에 실패했습니다.");
         }
 
+        return true;
     }
 
 }
