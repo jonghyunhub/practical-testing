@@ -4,8 +4,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import sample.cafekiosk.spring.client.mail.MailSendClient;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistory;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistoryRepository;
 import sample.cafekiosk.spring.domain.order.Order;
@@ -21,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static sample.cafekiosk.spring.domain.product.ProductSellingStatus.SELLING;
 import static sample.cafekiosk.spring.domain.product.ProductType.HANDMADE;
 
@@ -41,6 +46,9 @@ class OrderStatisticsServiceTest {
 
     @Autowired
     private MailSendHistoryRepository mailSendHistoryRepository;
+
+    @MockBean
+    private MailSendClient mailSendClient;
 
     @AfterEach
     void tearDown() {
@@ -66,6 +74,10 @@ class OrderStatisticsServiceTest {
         Order order2 = createPaymentCompletedOrder(now, products);
         Order order3 = createPaymentCompletedOrder(LocalDateTime.of(2023,3,5,23,59,59), products);
         Order order4 = createPaymentCompletedOrder(LocalDateTime.of(2023,3,6,0,0), products);
+
+        //stubbing
+        when(mailSendClient.sendMail(any(String.class), any(String.class), any(String.class), any(String.class)))
+                .thenReturn(true);
 
         // when
         boolean result = orderStatisticsService.sendOrderStatisticsMail(LocalDate.of(2023, 3, 5), "test@test.com");
