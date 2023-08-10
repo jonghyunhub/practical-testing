@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sample.cafekiosk.spring.client.mail.MailSendClient;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistory;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class) // 이게 있어야 @Mock 에너테이션이 붙은 객체 만들어줌
 class MailServiceTest {
 
-    @Mock
+    @Spy
     private MailSendClient mailSendClient;
     //MailSendClient mailSendClient = mock(MailSendClient.class); 이것과 같음
 
@@ -31,9 +32,13 @@ class MailServiceTest {
     @DisplayName("메일 전송 테스트")
     @Test
     void sendMail() {
-        // give
-        when(mailSendClient.sendMail(anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(true);
+        // given
+//        when(mailSendClient.sendMail(anyString(), anyString(), anyString(), anyString()))
+//                .thenReturn(true);
+
+        doReturn(true)
+                .when(mailSendClient)
+                .sendMail(anyString(), anyString(), anyString(), anyString());
 
         // when
         boolean result = mailService.sendMail("", "", "", "");
